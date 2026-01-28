@@ -1,0 +1,254 @@
+<div class="max-w-4xl mx-auto space-y-6">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h2 class="text-2xl font-bold text-blue-900">{{ 'PACKAGES.TITLE' | translate }}</h2>
+            <p class="text-gray-500">{{ 'PACKAGES.SUBTITLE' | translate }}</p>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+
+        <!-- Customer Search -->
+        <div class="mb-8 relative">
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'PACKAGES.SEARCH_CLIENT' | translate
+                }}</label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+                <!-- Input for search -->
+                <input [formControl]="searchControl" type="text"
+                    class="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm placeholder-gray-400"
+                    [placeholder]="'PACKAGES.SEARCH_PLACEHOLDER' | translate">
+
+                <!-- Clear Button -->
+                @if (selectedCustomer()) {
+                <button (click)="resetForm()"
+                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                }
+            </div>
+
+            <!-- Search Results Dropdown -->
+            @if (searchResults().length > 0 && !selectedCustomer()) {
+            <div
+                class="absolute z-10 w-full mt-1 bg-white shadow-lg rounded-lg border border-gray-100 max-h-60 overflow-auto">
+                @for (user of searchResults(); track user.email) {
+                <div (click)="selectCustomer(user)"
+                    class="px-4 py-3 hover:bg-blue-50 cursor-pointer border-b border-gray-50 last:border-0">
+                    <p class="font-bold text-gray-800">{{ user.fullName }}</p>
+                    <div class="flex gap-4 text-xs text-gray-500">
+                        <span>{{ user.email }}</span>
+                        <span>{{ user.phone || 'No Phone' }}</span>
+                    </div>
+                </div>
+                }
+            </div>
+            }
+
+            <!-- No Results / Create New Prompt -->
+            @if (searchControl.value && searchControl.value.length >= 3 && searchResults().length === 0 &&
+            !selectedCustomer()) {
+            <div class="absolute z-10 w-full mt-1 bg-white shadow-lg rounded-lg border border-gray-100 p-4 text-center">
+                <p class="text-sm text-gray-500 mb-2">{{ 'PACKAGES.NO_RESULTS' | translate }}</p>
+                <button class="text-blue-600 font-bold text-sm hover:underline">{{ 'PACKAGES.CREATE_NEW' | translate
+                    }}</button>
+            </div>
+            }
+        </div>
+
+        <!-- Package Form -->
+        <form [formGroup]="packageForm" (ngSubmit)="onSubmit()" class="space-y-6">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Package Details -->
+                <div class="space-y-4">
+                    <h3 class="font-bold text-gray-800 border-b pb-2">Detalles del Paquete</h3>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                        <input formControlName="description" type="text"
+                            class="w-full px-3 py-2 border rounded-lg focus:ring-blue-500">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Categoría</label>
+                            <select formControlName="category"
+                                class="w-full px-3 py-2 border rounded-lg focus:ring-blue-500">
+                                <option value="">Seleccionar...</option>
+                                @for (cat of tariffCategories(); track cat.id) {
+                                <option [value]="cat.id">{{ cat.name | translate }}</option>
+                                }
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Subcategoría</label>
+                            <select formControlName="subcategory"
+                                class="w-full px-3 py-2 border rounded-lg focus:ring-blue-500">
+                                <option value="">General</option>
+                                @for (sub of availableSubcategories(); track sub.id) {
+                                <option [value]="sub.id">{{ sub.subcategoryName }} ({{ sub.feeValue }}%)</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Peso (Lb)</label>
+                            <input formControlName="weight" type="number" step="0.1"
+                                class="w-full px-3 py-2 border rounded-lg focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Valor Declarado ($)</label>
+                            <input formControlName="declaredValue" type="number" step="0.01"
+                                class="w-full px-3 py-2 border rounded-lg focus:ring-blue-500">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Remitente</label>
+                        <input formControlName="senderName" type="text"
+                            class="w-full px-3 py-2 border rounded-lg focus:ring-blue-500">
+                    </div>
+                </div>
+
+                <!-- Destination & Cost -->
+                <div class="space-y-4">
+                    <h3 class="font-bold text-gray-800 border-b pb-2">Destino y Cobro</h3>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">País de Destino</label>
+                            <select formControlName="destinationCountry"
+                                class="w-full px-3 py-2 border rounded-lg focus:ring-blue-500">
+                                <option value="ESA">El Salvador</option>
+                                <option value="USA">Estados Unidos</option>
+                            </select>
+                        </div>
+
+                        <!-- Checkbox for Home Delivery -->
+                        <div class="flex items-center gap-3 bg-blue-50 p-3 rounded-lg border border-blue-100 mt-6">
+                            <input formControlName="isHomeDelivery" id="isHomeDelivery" type="checkbox"
+                                class="w-5 h-5 text-blue-600 rounded focus:ring-blue-500 border-gray-300">
+                            <label for="isHomeDelivery"
+                                class="text-sm font-medium text-blue-900 cursor-pointer select-none">
+                                Entrega a Domicilio
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Dirección de Destino
+                            @if(!packageForm.get('isHomeDelivery')?.value) {
+                            <span class="text-gray-400 font-normal">(Opcional, entrega en oficina)</span>
+                            } @else {
+                            <span class="text-red-500">*</span>
+                            }
+                        </label>
+                        @if (customerAddresses().length === 0) {
+                        <div class="text-sm text-amber-600 bg-amber-50 p-2 rounded">
+                            El cliente no tiene direcciones registradas para el país seleccionado.
+                        </div>
+                        }
+                        <select formControlName="destinationAddressId"
+                            class="w-full px-3 py-2 border rounded-lg focus:ring-blue-500">
+                            <option value="">Seleccione una dirección...</option>
+                            @for (addr of customerAddresses(); track addr.id) {
+                            <option [value]="addr.id">{{ addr.department || addr.city }}, {{ addr.municipality ||
+                                addr.state }} (Ref: {{
+                                addr.referencePoint || addr.street }})</option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Cost Breakdown Summary -->
+                    <div class="bg-gray-50 rounded-lg p-4 space-y-2 border border-gray-200">
+                        <div class="flex justify-between text-sm text-gray-600">
+                            <span>Costo Base (Libraje):</span>
+                            <span>${{ baseCost() | number:'1.2-2' }}</span>
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-600">
+                            <span>Arancel/Seguro:</span>
+                            <span>${{ tariffCost() | number:'1.2-2' }}</span>
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-600">
+                            <span>Cargos Admin + Aereo:</span>
+                            <span>${{ adminFees() | number:'1.2-2' }}</span>
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-600">
+                            <span>Impuestos (IVA):</span>
+                            <span>${{ taxes() | number:'1.2-2' }}</span>
+                        </div>
+
+                        @if(homeDeliveryFee() > 0) {
+                        <div
+                            class="flex justify-between text-sm font-semibold text-blue-700 bg-blue-50 px-2 py-1 rounded">
+                            <span>Costo a Domicilio:</span>
+                            <span>${{ homeDeliveryFee() | number:'1.2-2' }}</span>
+                        </div>
+                        }
+
+                        <div class="flex justify-between font-bold text-lg text-blue-900 pt-2 border-t border-gray-200">
+                            <span>{{ 'PACKAGES.TOTAL_DUE' | translate }}:</span>
+                            <span class="text-orange-500">${{ totalCost() | number:'1.2-2' }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end pt-4">
+                <button type="submit" [disabled]="packageForm.invalid || !selectedCustomer()"
+                    class="px-8 py-3 bg-blue-900 text-white font-bold rounded-lg hover:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed shadow transition-colors flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                    </svg>
+                    {{ 'PACKAGES.REGISTER_PRINT' | translate }}
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- PDF Preview Modal -->
+    @if (pdfUrl()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl flex flex-col h-[90vh]">
+            <div class="flex justify-between items-center p-4 border-b">
+                <h3 class="font-bold text-lg text-gray-800">Vista Previa de Etiqueta</h3>
+                <button (click)="closePreview()" class="text-gray-500 hover:text-gray-700">
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="flex-1 bg-gray-100 p-4 overflow-hidden relative">
+                <iframe [src]="pdfUrl()" id="print-iframe" class="w-full h-full border rounded bg-white"></iframe>
+            </div>
+            <div class="p-4 border-t flex justify-end gap-3">
+                <button (click)="closePreview()"
+                    class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">Cerrar</button>
+                <button (click)="printLabel()"
+                    class="px-6 py-2 bg-blue-900 text-white font-bold rounded-lg hover:bg-blue-800 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                    </svg>
+                    Imprimir
+                </button>
+            </div>
+        </div>
+    </div>
+    }
+</div>

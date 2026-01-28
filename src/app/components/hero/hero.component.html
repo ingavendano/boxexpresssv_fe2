@@ -1,0 +1,54 @@
+<section class="relative min-h-[600px] flex items-center justify-center overflow-hidden bg-[#1e3a8a]">
+    <!-- Background with Gradient/Overlay -->
+    <div class="absolute inset-0 bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 z-0"></div>
+
+    <!-- Subtle pattern overlay (optional) -->
+    <div class="absolute inset-0 opacity-10 z-0"
+        style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+    <div class="container mx-auto px-4 relative z-10 text-center text-white">
+        <!-- Badge -->
+        <div class="inline-block bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1 mb-8">
+            <span class="text-xs font-semibold tracking-wider uppercase text-blue-200">{{ 'hero.badge' | translate
+                }}</span>
+        </div>
+
+        <!-- Headline -->
+        <h1 class="text-4xl md:text-5xl lg:text-7xl font-bold leading-tight mb-6"
+            [innerHTML]="'hero.title' | translate">
+        </h1>
+
+        <!-- Subheadline -->
+        <p class="text-lg md:text-xl text-blue-100 max-w-2xl mx-auto mb-10 leading-relaxed">
+            {{ 'hero.subtitle' | translate }}
+        </p>
+
+        <!-- Search Box -->
+        <div class="max-w-xl mx-auto bg-white/10 backdrop-blur-md p-2 rounded-2xl border border-white/20 shadow-2xl">
+            <div class="flex items-center bg-white/5 rounded-xl border border-white/10 p-1">
+                <div class="pl-4 text-blue-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="size-5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                    </svg>
+                </div>
+                <input type="text" [(ngModel)]="searchQuery" (keydown.enter)="onSearch()"
+                    [placeholder]="'hero.searchPlaceholder' | translate"
+                    class="w-full bg-transparent border-none text-white placeholder-blue-200/70 focus:ring-0 px-4 py-3 text-sm">
+                <button (click)="onSearch()"
+                    class="bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold py-3 px-6 rounded-lg shadow-lg transition-all whitespace-nowrap">
+                    {{ 'hero.trackButton' | translate }}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ocean/Ship Abstract Shape Bottom -->
+    <div class="absolute bottom-0 left-0 w-full overflow-hidden leading-none rotate-180">
+        <svg class="relative block w-[calc(100%+1.3px)] h-[60px]" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M1200 120L0 16.48 0 0 1200 0 1200 120z" class="fill-white"></path>
+        </svg>
+    </div>
+</section>

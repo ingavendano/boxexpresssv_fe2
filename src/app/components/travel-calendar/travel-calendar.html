@@ -1,0 +1,158 @@
+<section class="py-16 bg-gray-50 min-h-screen bg-[url('/hero-bg-pattern.svg')] bg-cover bg-center">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-extrabold text-blue-900 sm:text-4xl">
+                {{ 'calendar.title' | translate }}
+            </h2>
+            <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-600">
+                {{ 'calendar.subtitle' | translate }}
+            </p>
+        </div>
+
+        <!-- Loading State -->
+        @if (isLoading()) {
+        <div class="flex justify-center items-center py-20">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+        </div>
+        }
+
+        <!-- Empty State -->
+        @if (!isLoading() && travels().length === 0) {
+        <div class="text-center py-20 bg-white rounded-3xl shadow-sm border border-gray-100">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-900">No hay viajes programados</h3>
+            <p class="mt-1 text-sm text-gray-500">Consulta de nuevo más tarde.</p>
+        </div>
+        }
+
+        <!-- Grid -->
+        <div class="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            @for (travel of travels(); track travel.id) {
+            <div
+                class="group relative bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden">
+
+                <!-- Transport Type Badge (Top Right) -->
+                <div class="absolute top-0 right-0 p-4">
+                    <span
+                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 gap-1">
+                        <!-- Icons based on type -->
+                        @if (travel.transportType === 'AIR') {
+                        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                        </svg>
+                        } @else if (travel.transportType === 'SEA') {
+                        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13.5 10.5V6.75a4.5 4.5 0 119 0v3.75M3.75 21.75h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H3.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                        </svg>
+                        }
+                        {{ 'calendar.badge.' + travel.transportType.toLowerCase() | translate }}
+                    </span>
+                </div>
+
+                <div class="p-6">
+                    <!-- Route -->
+                    <div class="flex items-center justify-between mb-6 mt-2">
+                        <div class="text-left">
+                            <div class="text-xs text-gray-500 uppercase tracking-wider">{{ 'calendar.origin' | translate
+                                }}</div>
+                            <div class="font-bold text-xl text-blue-900">{{ travel.origin }}</div>
+                        </div>
+                        <!-- Arrow Icon -->
+                        <div class="text-orange-300 px-2">
+                            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xs text-gray-500 uppercase tracking-wider">{{ 'calendar.destination' |
+                                translate }}</div>
+                            <div class="font-bold text-xl text-blue-900">{{ travel.destination }}</div>
+                        </div>
+                    </div>
+
+                    <!-- Divider -->
+                    <div class="border-t border-gray-100 my-4"></div>
+
+                    <!-- Dates -->
+                    <div class="space-y-3">
+                        <!-- Closing Date -->
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center text-sm text-gray-600">
+                                <svg class="w-4 h-4 mr-2 text-red-400" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                {{ 'calendar.closingDate' | translate }}
+                            </div>
+                            <div class="font-semibold text-gray-900">
+                                {{ travel.closingDate | date:'mediumDate' }}
+                            </div>
+                        </div>
+
+                        <!-- Departure Date -->
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center text-sm text-gray-600">
+                                <svg class="w-4 h-4 mr-2 text-blue-400" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                {{ 'calendar.departureDate' | translate }}
+                            </div>
+                            <div class="font-semibold text-gray-900">
+                                {{ travel.departureDate | date:'mediumDate' }}
+                            </div>
+                        </div>
+
+                        <!-- Arrival Date -->
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center text-sm text-gray-600">
+                                <svg class="w-4 h-4 mr-2 text-green-400" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                {{ 'calendar.arrivalDate' | translate }}
+                            </div>
+                            <div class="font-semibold text-gray-900">
+                                {{ travel.arrivalDate | date:'mediumDate' }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer Actions / Status -->
+                    <div class="mt-6 flex items-center justify-between">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                            [ngClass]="getStatusColor(travel.status)">
+                            {{ 'calendar.status.' + travel.status | translate }}
+                        </span>
+
+                        @if (isClosingSoon(travel.closingDate)) {
+                        <span
+                            class="animate-pulse inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                            {{ 'calendar.badge.closingSoon' | translate }}
+                        </span>
+                        }
+                    </div>
+                </div>
+
+                <!-- Bottom Orange Bar for visual pop on hover -->
+                <div
+                    class="absolute bottom-0 left-0 w-full h-1 bg-orange-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left">
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</section>

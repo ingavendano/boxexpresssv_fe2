@@ -1,0 +1,126 @@
+<header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100">
+    <div class="container mx-auto px-6 h-20 flex items-center justify-between">
+        <!-- Logo -->
+        <a href="#" class="flex items-center gap-2 group">
+            <img src="/logo-boxexpress.png" alt="BoxExpress de El Salvador" class="h-12 w-auto">
+        </a>
+
+        <!-- Desktop Nav -->
+        <nav class="hidden md:flex items-center gap-8">
+            <a routerLink="/" routerLinkActive="text-blue-600" [routerLinkActiveOptions]="{exact: true}"
+                class="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">{{
+                'navbar.home' | translate }}</a>
+            <a routerLink="/services" routerLinkActive="text-blue-600"
+                class="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">{{
+                'navbar.services' | translate }}</a>
+            <a routerLink="/tracking" routerLinkActive="text-blue-600"
+                class="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">{{
+                'navbar.tracking' | translate }}</a>
+            <a routerLink="/about-us" routerLinkActive="text-blue-600"
+                class="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">{{
+                'navbar.aboutus' | translate }}</a>
+            <a routerLink="/calendar" routerLinkActive="text-blue-600"
+                class="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">{{
+                'navbar.calendar' | translate }}</a>
+
+            @if (authService.currentUser()) {
+            <button (click)="logout()" class="text-sm font-medium text-red-600 hover:text-red-700 transition-colors">
+                {{ 'navbar.logout' | translate }}
+            </button>
+            } @else {
+            <a routerLink="/login" routerLinkActive="text-blue-600"
+                class="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">{{
+                'navbar.login' | translate }}</a>
+            }
+        </nav>
+
+        <!-- Right Actions -->
+        <div class="flex items-center gap-6">
+
+            <!-- Language Selector -->
+            <div class="relative hidden md:block">
+                <button (click)="toggleLangMenu()"
+                    class="flex items-center gap-2 text-sm text-gray-600 hover:text-blue-900 font-medium focus:outline-none">
+                    <!-- Flag icon -->
+                    @if (currentLang() === 'English') {
+                    <svg class="w-5 h-5 rounded" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="24" height="24" rx="2" fill="#B22234" />
+                        <path d="M0 3h24M0 6h24M0 9h24M0 12h24M0 15h24M0 18h24M0 21h24" stroke="white"
+                            stroke-width="1.5" />
+                        <rect width="10" height="11" fill="#3C3B6E" />
+                    </svg>
+                    } @else {
+                    <svg class="w-5 h-5 rounded" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="24" height="8" fill="#0F47AF" />
+                        <rect y="8" width="24" height="8" fill="white" />
+                        <rect y="16" width="24" height="8" fill="#0F47AF" />
+                    </svg>
+                    }
+                    {{ currentLang() }}
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="size-3 text-gray-400 transition-transform duration-200"
+                        [class.rotate-180]="isLangMenuOpen()">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+
+                <!-- Dropdown Menu -->
+                @if (isLangMenuOpen()) {
+                <div
+                    class="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-xl border border-gray-100 py-1 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <button (click)="setLang('English')"
+                        class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors flex items-center justify-between">
+                        <span class="flex items-center gap-2">
+                            <!-- USA Flag -->
+                            <svg class="w-5 h-5 rounded" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <rect width="24" height="24" rx="2" fill="#B22234" />
+                                <path d="M0 3h24M0 6h24M0 9h24M0 12h24M0 15h24M0 18h24M0 21h24" stroke="white"
+                                    stroke-width="1.5" />
+                                <rect width="10" height="11" fill="#3C3B6E" />
+                            </svg>
+                            English
+                        </span>
+                        @if (currentLang() === 'English') {
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                            stroke="currentColor" class="size-4 text-blue-600">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                        </svg>
+                        }
+                    </button>
+                    <button (click)="setLang('Español')"
+                        class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors flex items-center justify-between">
+                        <span class="flex items-center gap-2">
+                            <!-- El Salvador Flag -->
+                            <svg class="w-5 h-5 rounded" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <rect width="24" height="8" fill="#0F47AF" />
+                                <rect y="8" width="24" height="8" fill="white" />
+                                <rect y="16" width="24" height="8" fill="#0F47AF" />
+                            </svg>
+                            Español
+                        </span>
+                        @if (currentLang() === 'Español') {
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                            stroke="currentColor" class="size-4 text-blue-600">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                        </svg>
+                        }
+                    </button>
+                </div>
+                }
+            </div>
+
+            <!-- CTA Button -->
+            <button
+                class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold py-2.5 px-6 rounded-full shadow-lg shadow-orange-500/30 transition-all transform hover:scale-105 active:scale-95 flex items-center gap-2">
+                {{ 'navbar.instantQuote' | translate }}
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                    stroke="currentColor" class="size-4">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
+                </svg>
+            </button>
+        </div>
+    </div>
+</header>

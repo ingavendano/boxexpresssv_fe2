@@ -1,0 +1,145 @@
+<div class="max-w-6xl mx-auto space-y-8 animate-fade-in">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+            <h1 class="text-3xl font-bold text-blue-900">{{ 'CUSTOMER.DASHBOARD.WELCOME' | translate }}</h1>
+            <p class="text-gray-500">Bienvenido a tu panel de control</p>
+        </div>
+        <div class="flex gap-3">
+            <button routerLink="/customer/addresses"
+                class="px-4 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 font-medium transition-colors">
+                {{ 'CUSTOMER.ADDRESS.MANAGE' | translate }}
+            </button>
+            <button
+                class="px-4 py-2 bg-orange-50 text-orange-600 rounded-lg hover:bg-orange-100 font-medium transition-colors">
+                <i class="lucide lucide-bell"></i> Notificaciones
+            </button>
+        </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- In Transit -->
+        <div
+            class="bg-gradient-to-br from-blue-900 to-blue-800 rounded-xl p-6 text-white shadow-lg relative overflow-hidden">
+            <div class="absolute right-0 top-0 opacity-10 transform translate-x-4 -translate-y-4">
+                <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
+                        stroke="none" />
+                </svg>
+            </div>
+            <h3 class="text-blue-200 font-medium mb-1">Paquetes en Camino</h3>
+            <p class="text-4xl font-bold">{{ packagesInTransit() }}</p>
+            <div class="mt-4 flex items-center text-sm text-blue-200">
+                <span class="bg-white/10 px-2 py-1 rounded">Activos</span>
+            </div>
+        </div>
+
+        <!-- Houston Address -->
+        <div
+            class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 relative group hover:border-orange-200 transition-colors">
+            <div class="flex justify-between items-start mb-4">
+                <h3 class="text-gray-500 font-medium">Tu Dirección en USA</h3>
+                <span class="text-orange-500 bg-orange-50 p-2 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                </span>
+            </div>
+            <div
+                class="space-y-1 text-gray-800 font-mono text-sm bg-gray-50 p-3 rounded border border-dashed border-gray-300">
+                <p class="font-bold">John Doe (Tu Nombre)</p>
+                <p>1234 Westheimer Rd</p>
+                <p>Unit 505 (Box Express)</p>
+                <p>Houston, TX 77006</p>
+                <p>Tel: +1 (555) 012-3456</p>
+            </div>
+            <p class="text-xs text-gray-400 mt-2 text-center">Usa esta dirección en Amazon/eBay</p>
+        </div>
+
+        <!-- Recent Activity / Notifications (Placeholder) -->
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <h3 class="text-gray-500 font-medium mb-4">Actividad Reciente</h3>
+            <div class="space-y-3">
+                @if (recentPackages().length === 0) {
+                <p class="text-sm text-gray-400">No hay actividad reciente.</p>
+                } @else {
+                @for (pkg of recentPackages(); track pkg.id) {
+                <div class="flex items-center gap-3 text-sm">
+                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                    <span class="text-gray-600 truncate flex-1">{{ pkg.description }}</span>
+                    <span class="font-bold text-gray-800">{{ pkg.currentStatus }}</span>
+                </div>
+                }
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Packages List -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+            <h2 class="text-lg font-bold text-blue-900">Historial de Envíos</h2>
+            <div class="relative">
+                <input type="text" placeholder="Buscar tracking..."
+                    class="pl-9 pr-4 py-2 border rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500">
+                <svg class="w-4 h-4 text-gray-400 absolute left-3 top-3" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+                <thead class="bg-gray-50 text-gray-500 font-medium">
+                    <tr>
+                        <th class="px-6 py-4">Tracking ID</th>
+                        <th class="px-6 py-4">Descripción</th>
+                        <th class="px-6 py-4">Estado</th>
+                        <th class="px-6 py-4">Fecha</th>
+                        <th class="px-6 py-4 text-right">Costo</th>
+                        <th class="px-6 py-4 text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    @for (pkg of packages(); track pkg.id) {
+                    <tr class="hover:bg-blue-50/50 transition-colors">
+                        <td class="px-6 py-4 font-medium text-blue-600">{{ pkg.trackingId }}</td>
+                        <td class="px-6 py-4 text-gray-600">{{ pkg.description }}</td>
+                        <td class="px-6 py-4">
+                            <span class="px-2.5 py-1 rounded-full text-xs font-semibold"
+                                [ngClass]="getStatusClass(pkg.currentStatus)">
+                                {{ pkg.currentStatus }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-gray-500">{{ pkg.createdAt | date:'mediumDate' }}</td>
+                        <td class="px-6 py-4 text-right font-mono">${{ pkg.totalCost | number:'1.2-2' }}</td>
+                        <td class="px-6 py-4 text-center">
+                            <button class="text-gray-400 hover:text-blue-600 transition-colors">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    }
+                    @if (packages().length === 0) {
+                    <tr>
+                        <td colspan="6" class="px-6 py-12 text-center text-gray-400">
+                            No tienes paquetes registrados aún.
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

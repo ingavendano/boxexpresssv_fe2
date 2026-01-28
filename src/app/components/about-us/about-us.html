@@ -1,0 +1,289 @@
+<!-- Sub-navigation -->
+<div class="bg-white/90 backdrop-blur-sm sticky top-20 z-40 border-b border-gray-100 py-3">
+    <div class="container mx-auto px-6">
+        <nav class="flex justify-center gap-8">
+            <button (click)="scrollToSection('history')"
+                class="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">
+                {{ 'aboutUs.nav.history' | translate }}
+            </button>
+            <button (click)="scrollToSection('payments')"
+                class="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">
+                {{ 'aboutUs.nav.payments' | translate }}
+            </button>
+            <button (click)="scrollToSection('contact')"
+                class="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">
+                {{ 'aboutUs.nav.contact' | translate }}
+            </button>
+        </nav>
+    </div>
+</div>
+
+<!-- Section 1: Historia y Origen -->
+<section id="history" class="py-20 bg-gradient-to-br from-blue-50 to-white overflow-hidden"
+    [class.fade-in-visible]="historyVisible()">
+    <div class="container mx-auto px-6">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+            <!-- Left: Visual -->
+            <div class="relative fade-in-left" [class.visible]="historyVisible()">
+                <!-- Skyline illustration -->
+                <div
+                    class="relative h-80 bg-gradient-to-b from-blue-600 to-blue-800 rounded-2xl overflow-hidden shadow-2xl">
+                    <!-- Houston Skyline silhouette -->
+                    <div class="absolute bottom-0 left-0 w-1/2 h-32">
+                        <svg viewBox="0 0 200 100" class="w-full h-full fill-blue-900/50">
+                            <path
+                                d="M0,100 L0,60 L20,60 L20,40 L30,40 L30,50 L40,50 L40,30 L50,30 L50,45 L60,45 L60,25 L75,25 L75,55 L85,55 L85,35 L100,35 L100,100 Z" />
+                        </svg>
+                        <span class="absolute bottom-2 left-4 text-white/70 text-xs font-medium">Houston, TX</span>
+                    </div>
+                    <!-- Route line -->
+                    <div class="absolute top-1/2 left-1/4 right-1/4 h-0.5 bg-orange-500">
+                        <div class="absolute -top-1 left-0 w-3 h-3 bg-orange-500 rounded-full animate-pulse"></div>
+                        <div class="absolute -top-1 right-0 w-3 h-3 bg-orange-500 rounded-full animate-pulse"></div>
+                        <!-- Airplane icon moving -->
+                        <svg class="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 text-white animate-flight"
+                            viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
+                        </svg>
+                    </div>
+                    <!-- Volcano silhouette (Chaparrastique) -->
+                    <div class="absolute bottom-0 right-0 w-1/2 h-40">
+                        <svg viewBox="0 0 200 120" class="w-full h-full fill-blue-900/50">
+                            <path d="M200,120 L200,80 L160,20 L140,25 L100,60 L80,55 L60,70 L40,65 L0,90 L0,120 Z" />
+                        </svg>
+                        <span class="absolute bottom-2 right-4 text-white/70 text-xs font-medium">San Miguel, SV</span>
+                    </div>
+                    <!-- Title overlay -->
+                    <div class="absolute top-6 left-6 right-6 text-center">
+                        <h3 class="text-white text-xl font-bold">{{ 'aboutUs.history.connectionTitle' | translate }}
+                        </h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Content -->
+            <div class="fade-in-right" [class.visible]="historyVisible()">
+                <span class="text-orange-500 font-semibold text-sm uppercase tracking-wider">{{ 'aboutUs.history.badge'
+                    | translate }}</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mt-2 mb-6">{{ 'aboutUs.history.title' |
+                    translate }}</h2>
+                <p class="text-gray-600 leading-relaxed mb-8">{{ 'aboutUs.history.description' | translate }}</p>
+
+                <!-- Timeline -->
+                <div class="relative pl-8 border-l-2 border-orange-200">
+                    @for (item of timeline; track item.year) {
+                    <div class="mb-8 relative">
+                        <div
+                            class="absolute -left-[41px] w-5 h-5 bg-orange-500 rounded-full border-4 border-white shadow">
+                        </div>
+                        <span class="text-orange-500 font-bold text-lg">{{ item.year }}</span>
+                        <h4 class="font-semibold text-gray-900 mt-1">{{ item.titleKey | translate }}</h4>
+                        <p class="text-gray-500 text-sm mt-1">{{ item.descriptionKey | translate }}</p>
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section 2: Métodos de Pago -->
+<section id="payments" class="py-20 bg-white">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-12 fade-in-up" [class.visible]="paymentsVisible()">
+            <span class="text-orange-500 font-semibold text-sm uppercase tracking-wider">{{ 'aboutUs.payments.badge' |
+                translate }}</span>
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mt-2">{{ 'aboutUs.payments.title' | translate }}
+            </h2>
+            <p class="text-gray-500 mt-4 max-w-2xl mx-auto">{{ 'aboutUs.payments.subtitle' | translate }}</p>
+        </div>
+
+        <!-- Payment Grid -->
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            @for (method of paymentMethods; track method.id) {
+            <div class="payment-card bg-gray-50 rounded-xl p-6 border-2 border-transparent hover:border-orange-500 transition-all duration-300 cursor-pointer group"
+                [class.fade-in-up]="true" [class.visible]="paymentsVisible()">
+                <div class="flex items-center gap-4">
+                    <!-- Icon -->
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center"
+                        [class.bg-blue-100]="method.country === 'usa'" [class.bg-green-100]="method.country === 'sv'">
+                        @if (method.icon === 'zelle') {
+                        <svg class="w-6 h-6 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M13.559 24h-2.841a.483.483 0 0 1-.483-.483v-5.373H3.903a.483.483 0 0 1-.342-.825l12.02-12.02a.483.483 0 0 1 .824.342v5.373h6.332a.483.483 0 0 1 .342.825l-12.02 12.02a.483.483 0 0 1-.342.141h-.158z" />
+                        </svg>
+                        }
+                        @if (method.icon === 'venmo') {
+                        <svg class="w-6 h-6 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M19.5 3c.9 1.5 1.3 3.1 1.3 5.1 0 6.3-5.4 14.5-9.8 20.3H3.5L.5 3.6l7-.7 1.8 14.5c1.7-2.8 3.8-7.2 3.8-10.2 0-1.9-.3-3.2-.9-4.2l7.3-.9z" />
+                        </svg>
+                        }
+                        @if (method.icon === 'creditcard') {
+                        <svg class="w-6 h-6 text-blue-700" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+                            <line x1="1" y1="10" x2="23" y2="10" />
+                        </svg>
+                        }
+                        @if (method.icon === 'bank') {
+                        <svg class="w-6 h-6 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3" />
+                        </svg>
+                        }
+                        @if (method.icon === 'cash') {
+                        <svg class="w-6 h-6 text-green-700" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="1" y="4" width="22" height="16" rx="2" />
+                            <circle cx="12" cy="12" r="3" />
+                            <path d="M6 12h.01M18 12h.01" />
+                        </svg>
+                        }
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-gray-900 group-hover:text-orange-600 transition-colors">{{
+                            method.nameKey | translate }}</h3>
+                        <span class="text-xs text-gray-500">
+                            @if (method.country === 'usa') { 🇺🇸 USA }
+                            @if (method.country === 'sv') { 🇸🇻 El Salvador }
+                        </span>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+
+        <!-- Security Note -->
+        <div class="mt-10 text-center fade-in-up" [class.visible]="paymentsVisible()">
+            <div class="inline-flex items-center gap-2 bg-green-50 text-green-700 px-4 py-2 rounded-full text-sm">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    <path d="m9 12 2 2 4-4" />
+                </svg>
+                {{ 'aboutUs.payments.securityNote' | translate }}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section 3: Formulario de Contacto -->
+<section id="contact" class="py-20 bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 relative overflow-hidden">
+    <!-- Background pattern -->
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-0 left-0 w-96 h-96 bg-orange-500 rounded-full filter blur-3xl"></div>
+        <div class="absolute bottom-0 right-0 w-96 h-96 bg-blue-400 rounded-full filter blur-3xl"></div>
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="max-w-2xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-10 fade-in-up" [class.visible]="contactVisible()">
+                <span class="text-orange-400 font-semibold text-sm uppercase tracking-wider">{{ 'aboutUs.contact.badge'
+                    | translate }}</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-white mt-2">{{ 'aboutUs.contact.title' | translate }}
+                </h2>
+                <p class="text-blue-200 mt-4">{{ 'aboutUs.contact.subtitle' | translate }}</p>
+            </div>
+
+            <!-- Glassmorphism Form Card -->
+            <div class="glass-card rounded-2xl p-8 fade-in-up" [class.visible]="contactVisible()">
+                @if (formSubmitted()) {
+                <div class="text-center py-8">
+                    <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="3">
+                            <path d="m4.5 12.75 6 6 9-13.5" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900">{{ 'aboutUs.contact.successTitle' | translate }}</h3>
+                    <p class="text-gray-600 mt-2">{{ 'aboutUs.contact.successMessage' | translate }}</p>
+                </div>
+                } @else {
+                <form (ngSubmit)="submitForm()" class="space-y-6">
+                    <!-- Name -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">{{ 'aboutUs.contact.nameLabel' |
+                            translate }}</label>
+                        <input type="text" [ngModel]="formName()" (ngModelChange)="formName.set($event)" name="name"
+                            class="w-full px-4 py-3 rounded-xl border-2 transition-colors focus:outline-none"
+                            [class.border-gray-200]="formName().length === 0"
+                            [class.border-red-400]="formName().length > 0 && !nameValid()"
+                            [class.border-green-400]="nameValid()"
+                            [placeholder]="'aboutUs.contact.namePlaceholder' | translate">
+                    </div>
+
+                    <!-- Phone with country selector -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">{{ 'aboutUs.contact.phoneLabel' |
+                            translate }}</label>
+                        <div class="flex gap-2">
+                            <button type="button" (click)="toggleCountry()"
+                                class="flex items-center gap-2 px-4 py-3 rounded-xl border-2 border-gray-200 bg-gray-50 hover:bg-gray-100 transition-colors">
+                                @if (selectedCountry() === '+1') {
+                                <svg class="w-5 h-5 rounded" viewBox="0 0 24 24" fill="none">
+                                    <rect width="24" height="24" rx="2" fill="#B22234" />
+                                    <path d="M0 3h24M0 6h24M0 9h24M0 12h24M0 15h24M0 18h24M0 21h24" stroke="white"
+                                        stroke-width="1.5" />
+                                    <rect width="10" height="11" fill="#3C3B6E" />
+                                </svg>
+                                } @else {
+                                <svg class="w-5 h-5 rounded" viewBox="0 0 24 24" fill="none">
+                                    <rect width="24" height="8" fill="#0F47AF" />
+                                    <rect y="8" width="24" height="8" fill="white" />
+                                    <rect y="16" width="24" height="8" fill="#0F47AF" />
+                                </svg>
+                                }
+                                <span class="font-medium">{{ selectedCountry() }}</span>
+                            </button>
+                            <input type="tel" [ngModel]="formPhone()" (ngModelChange)="formPhone.set($event)"
+                                name="phone"
+                                class="flex-1 px-4 py-3 rounded-xl border-2 transition-colors focus:outline-none"
+                                [class.border-gray-200]="formPhone().length === 0"
+                                [class.border-red-400]="formPhone().length > 0 && !phoneValid()"
+                                [class.border-green-400]="phoneValid()"
+                                [placeholder]="'aboutUs.contact.phonePlaceholder' | translate">
+                        </div>
+                    </div>
+
+                    <!-- Package Type -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">{{ 'aboutUs.contact.packageLabel' |
+                            translate }}</label>
+                        <textarea [ngModel]="formPackageType()" (ngModelChange)="formPackageType.set($event)" rows="3"
+                            name="packageType"
+                            class="w-full px-4 py-3 rounded-xl border-2 transition-colors focus:outline-none resize-none"
+                            [class.border-gray-200]="formPackageType().length === 0"
+                            [class.border-red-400]="formPackageType().length > 0 && !packageTypeValid()"
+                            [class.border-green-400]="packageTypeValid()"
+                            [placeholder]="'aboutUs.contact.packagePlaceholder' | translate"></textarea>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" [disabled]="!formValid() || isSubmitting()"
+                        class="w-full py-4 rounded-xl font-semibold text-white transition-all flex items-center justify-center gap-2"
+                        [class.bg-orange-500]="formValid() && !isSubmitting()"
+                        [class.hover:bg-orange-600]="formValid() && !isSubmitting()" [class.bg-gray-300]="!formValid()"
+                        [class.cursor-not-allowed]="!formValid()">
+                        @if (isSubmitting()) {
+                        <svg class="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                                class="opacity-25" />
+                            <path d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" fill="currentColor"
+                                class="opacity-75" />
+                        </svg>
+                        {{ 'aboutUs.contact.sending' | translate }}
+                        } @else {
+                        {{ 'aboutUs.contact.submit' | translate }}
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+                        </svg>
+                        }
+                    </button>
+                </form>
+                }
+            </div>
+        </div>
+    </div>
+</section>

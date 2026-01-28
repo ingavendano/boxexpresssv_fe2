@@ -1,0 +1,83 @@
+<div class="admin-container">
+    <div class="header-section">
+        <h1 class="page-title">📦 Gestión de Tracking</h1>
+        <form [formGroup]="searchForm" (ngSubmit)="loadPackages()" class="search-filters">
+            <div class="form-group">
+                <input type="text" formControlName="tripId" placeholder="Buscar por Trip ID..." class="form-input">
+            </div>
+            <div class="form-group">
+                <select formControlName="status" class="form-select">
+                    <option value="">Todos los Estados</option>
+                    @for (status of statuses(); track status.code) {
+                    <option [value]="status.code">{{status.name}}</option>
+                    }
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                🔍 Buscar
+            </button>
+        </form>
+    </div>
+
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th style="width: 50px;">
+                        <input type="checkbox" [checked]="isAllSelected()" (change)="toggleSelectAll($event)">
+                    </th>
+                    <th>Tracking ID</th>
+                    <th>Cliente</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th>Trip ID</th>
+                    <th>Fecha Ingreso</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (pkg of packages(); track pkg.id) {
+                <tr [class.selected]="selectedIds().has(pkg.id)">
+                    <td>
+                        <input type="checkbox" [checked]="selectedIds().has(pkg.id)" (change)="toggleSelection(pkg.id)">
+                    </td>
+                    <td class="tracking-id">{{pkg.trackingId}}</td>
+                    <td>
+                        <div class="customer-info">
+                            <span class="receiver">{{pkg.receiverName}}</span>
+                            <small class="sender">De: {{pkg.senderName}}</small>
+                        </div>
+                    </td>
+                    <td>{{pkg.description}}</td>
+                    <td>
+                        <span class="status-pill" [ngClass]="pkg.currentStatus.code.toLowerCase()">
+                            {{pkg.currentStatus.name}}
+                        </span>
+                    </td>
+                    <td>{{pkg.tripId || '-'}}</td>
+                    <td>{{pkg.createdAt | date:'mediumDate'}}</td>
+                </tr>
+                } @empty {
+                <tr>
+                    <td colspan="7" class="empty-state">
+                        No se encontraron paquetes con los filtros seleccionados.
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if (totalSelected() > 0) {
+    <div class="floating-action-bar">
+        <div class="selection-count">
+            <span class="count-badge">{{totalSelected()}}</span>
+            <span>paquetes seleccionados</span>
+        </div>
+        <div class="actions">
+            <button (click)="openBulkUpdateModal()" class="btn btn-action">
+                🔄 Actualizar Estado en Lote
+            </button>
+        </div>
+    </div>
+    }
+</div>

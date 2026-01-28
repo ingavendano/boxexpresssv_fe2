@@ -1,0 +1,113 @@
+/* Fade-in animations */
+.fade-in-left,
+.fade-in-right,
+.fade-in-up {
+    opacity: 0;
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.fade-in-left {
+    transform: translateX(-30px);
+}
+
+.fade-in-right {
+    transform: translateX(30px);
+}
+
+.fade-in-up {
+    transform: translateY(30px);
+}
+
+.fade-in-left.visible,
+.fade-in-right.visible,
+.fade-in-up.visible {
+    opacity: 1;
+    transform: translateX(0) translateY(0);
+}
+
+/* Staggered animation for payment cards */
+.payment-card:nth-child(1) {
+    transition-delay: 0.1s;
+}
+
+.payment-card:nth-child(2) {
+    transition-delay: 0.2s;
+}
+
+.payment-card:nth-child(3) {
+    transition-delay: 0.3s;
+}
+
+.payment-card:nth-child(4) {
+    transition-delay: 0.4s;
+}
+
+.payment-card:nth-child(5) {
+    transition-delay: 0.5s;
+}
+
+.payment-card:nth-child(6) {
+    transition-delay: 0.6s;
+}
+
+/* Glassmorphism card */
+.glass-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Airplane flight animation */
+@keyframes flight {
+
+    0%,
+    100% {
+        transform: translateX(-50%) translateY(0);
+    }
+
+    50% {
+        transform: translateX(-50%) translateY(-5px);
+    }
+}
+
+.animate-flight {
+    animation: flight 2s ease-in-out infinite;
+}
+
+/* Payment card hover effect */
+.payment-card {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.payment-card:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Form input focus states */
+input:focus,
+textarea:focus {
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+}
+
+/* Button loading animation */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+/* Smooth section transitions */
+section {
+    scroll-margin-top: 100px;
+}

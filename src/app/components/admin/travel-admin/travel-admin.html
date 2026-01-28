@@ -1,0 +1,183 @@
+<div class="p-6 bg-gray-50 min-h-screen">
+
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-8">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">Gestión de Viajes</h1>
+            <p class="text-gray-600">Administra las salidas y llegadas de paquetería</p>
+        </div>
+        <button (click)="openModal()"
+            class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg shadow-sm flex items-center transition-colors">
+            <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Nuevo Viaje
+        </button>
+    </div>
+
+    <!-- Table -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ruta
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Fechas</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Estado</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @for (travel of travels(); track travel.id) {
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">{{ travel.origin }}</div>
+                            <div class="text-sm text-gray-500">→ {{ travel.destination }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">Salida: {{ travel.departureDate | date:'shortDate' }}
+                            </div>
+                            <div class="text-xs text-red-500">Cierre: {{ travel.closingDate | date:'shortDate' }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                                [class.bg-blue-100]="travel.transportType === 'AIR'"
+                                [class.text-blue-800]="travel.transportType === 'AIR'"
+                                [class.bg-cyan-100]="travel.transportType === 'SEA'"
+                                [class.text-cyan-800]="travel.transportType === 'SEA'">
+                                {{ travel.transportType }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                                [class.bg-gray-100]="travel.status === 'SCHEDULED'"
+                                [class.text-gray-800]="travel.status === 'SCHEDULED'"
+                                [class.bg-orange-100]="travel.status === 'IN_TRANSIT'"
+                                [class.text-orange-800]="travel.status === 'IN_TRANSIT'"
+                                [class.bg-green-100]="travel.status === 'COMPLETED'"
+                                [class.text-green-800]="travel.status === 'COMPLETED'">
+                                {{ travel.status }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <button (click)="openModal(travel)"
+                                class="text-blue-600 hover:text-blue-900 mr-4">Editar</button>
+                            <button (click)="deleteTravel(travel)"
+                                class="text-red-600 hover:text-red-900">Borrar</button>
+                        </td>
+                    </tr>
+                    }
+                    @if (travels().length === 0 && !isLoading()) {
+                    <tr>
+                        <td colspan="5" class="px-6 py-12 text-center text-gray-500">
+                            No hay viajes registrados. Crea uno nuevo.
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+@if (isModalOpen()) {
+<div class="fixed inset-0 overflow-y-auto z-50">
+    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+
+        <!-- Backdrop -->
+        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+            <div class="absolute inset-0 bg-gray-500 opacity-75" (click)="closeModal()"></div>
+        </div>
+
+        <!-- Modal Panel -->
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <div
+            class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full relative z-50">
+            <form [formGroup]="travelForm" (ngSubmit)="onSubmit()">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+                        {{ isEditing() ? 'Editar Viaje' : 'Nuevo Viaje' }}
+                    </h3>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <!-- Origin -->
+                        <div class="col-span-1">
+                            <label class="block text-sm font-medium text-gray-700">Origen</label>
+                            <input type="text" formControlName="origin"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2">
+                        </div>
+
+                        <!-- Destination -->
+                        <div class="col-span-1">
+                            <label class="block text-sm font-medium text-gray-700">Destino</label>
+                            <input type="text" formControlName="destination"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2">
+                        </div>
+
+                        <!-- Transport Type -->
+                        <div class="col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Tipo de Transporte</label>
+                            <select formControlName="transportType"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2">
+                                <option value="AIR">Aéreo</option>
+                                <option value="SEA">Marítimo</option>
+                                <option value="GROUND">Terrestre</option>
+                            </select>
+                        </div>
+
+                        <!-- Dates -->
+                        <div class="col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Fecha de Cierre (Recepción)</label>
+                            <input type="date" formControlName="closingDate"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2">
+                        </div>
+
+                        <div class="col-span-1">
+                            <label class="block text-sm font-medium text-gray-700">Fecha Salida</label>
+                            <input type="date" formControlName="departureDate"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2">
+                        </div>
+
+                        <div class="col-span-1">
+                            <label class="block text-sm font-medium text-gray-700">Fecha Llegada</label>
+                            <input type="date" formControlName="arrivalDate"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2">
+                        </div>
+
+                        <!-- Status -->
+                        <div class="col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Estado</label>
+                            <select formControlName="status"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2">
+                                <option value="SCHEDULED">Programado</option>
+                                <option value="IN_TRANSIT">En Tránsito</option>
+                                <option value="COMPLETED">Completado</option>
+                                <option value="CANCELLED">Cancelado</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="submit" [disabled]="isLoading()"
+                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50">
+                        {{ isEditing() ? 'Actualizar' : 'Guardar' }}
+                    </button>
+                    <button type="button" (click)="closeModal()"
+                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+}
