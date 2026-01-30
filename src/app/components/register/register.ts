@@ -59,7 +59,8 @@ export class RegisterComponent {
       fullName: formValue.fullName,
       email: formValue.email,
       password: formValue.password,
-      phone: fullPhone
+      phone: fullPhone,
+      role: 'ROLE_CLIENTE'
     }).subscribe({
       next: () => {
         this.isLoading.set(false);
@@ -68,8 +69,10 @@ export class RegisterComponent {
       error: (err) => {
         this.isLoading.set(false);
         console.error('Registration error', err);
-        // Simple error handling - can be improved based on backend response structure
-        this.errorMessage.set('Error en el registro. Verifique sus datos o intente más tarde.');
+
+        // Extract error message from backend response
+        const backendError = err.error?.error || 'Error en el registro. Verifique sus datos o intente más tarde.';
+        this.errorMessage.set(backendError);
       }
     });
   }

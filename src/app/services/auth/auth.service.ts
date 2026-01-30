@@ -10,6 +10,7 @@ export interface User {
     phone?: string;
     role?: string;
     token?: string;
+    lockerNumber?: string;
 }
 
 export interface RegisterRequest {
@@ -30,14 +31,17 @@ export interface AuthResponse {
     fullName: string;
     email: string;
     role: string;
+    lockerNumber?: string;
 }
+
+import { environment } from '../../../environments/environment';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
     private http = inject(HttpClient);
-    private apiUrl = 'http://localhost:8080/api/auth';
+    private apiUrl = `${environment.apiUrl}/api/auth`;
 
     // Signal to track current user state
     currentUser = signal<User | null>(this.getUserFromStorage());
@@ -52,6 +56,15 @@ export class AuthService {
         return this.http.post<AuthResponse>(`${this.apiUrl}/login`, request).pipe(
             tap(response => this.saveUserSession(response))
         );
+    }
+
+    updateCurrentUser(user: any) {
+        const current = this.currentUser();
+        if (current) {
+            const updated = { ...current, ...user };
+            localStorage.setItem('user', JSON.stringify(updated));
+            this.currentUser.set(updated);
+        }
     }
 
     logout() {
@@ -70,13 +83,15 @@ export class AuthService {
             localStorage.setItem('user', JSON.stringify({
                 fullName: response.fullName,
                 email: response.email,
-                role: response.role
+                role: response.role,
+                lockerNumber: response.lockerNumber
             }));
             this.currentUser.set({
                 fullName: response.fullName,
                 email: response.email,
                 role: response.role,
-                token: response.token
+                token: response.token,
+                lockerNumber: response.lockerNumber
             });
         }
     }

@@ -22,11 +22,13 @@ export class CustomerAddresses {
 
   departments = ['San Miguel', 'San Salvador', 'La Unión', 'Usulután', 'Morazán', 'La Libertad', 'Santa Ana', 'Sonsonate', 'Ahuachapán', 'Cabañas', 'Chalatenango', 'Cuscatlán', 'La Paz', 'San Vicente'];
 
+  editingAddressId = signal<number | null>(null);
+
   constructor() {
     this.addressForm = this.fb.group({
       department: ['', Validators.required],
       municipality: ['', Validators.required],
-      street: ['', Validators.required], // Using this for specific address line
+      street: ['', Validators.required],
       referencePoint: ['', Validators.required],
       phone: ['', Validators.required],
       contactName: ['', Validators.required]
@@ -42,12 +44,44 @@ export class CustomerAddresses {
   }
 
   openModal() {
+    this.editingAddressId.set(null);
     this.addressForm.reset();
     this.showModal.set(true);
   }
 
+  editAddress(addr: Address) {
+    this.editingAddressId.set(addr.id!);
+    this.addressForm.patchValue(addr);
+    this.showModal.set(true);
+  }
+
+  deleteAddress(id: number) {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "No podrás revertir esta acción",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.customerService.deleteAddress(id).subscribe({
+          next: () => {
+            this.addresses.update(list => list.filter(a => a.id !== id));
+            Swal.fire('Eliminado', 'La dirección ha sido eliminada.', 'success');
+          },
+          error: () => Swal.fire('Error', 'No se pudo eliminar la dirección', 'error')
+        });
+      }
+    });
+  }
+
   closeModal() {
     this.showModal.set(false);
+    this.editingAddressId.set(null);
+    this.addressForm.reset();
   }
 
   onSubmit() {
@@ -56,23 +90,36 @@ export class CustomerAddresses {
       return;
     }
 
-    const newAddress: Address = this.addressForm.value;
-    this.customerService.addAddress(newAddress).subscribe({
-      next: (saved) => {
-        this.addresses.update(list => [...list, saved]);
-        this.closeModal();
-        Swal.fire({
-          icon: 'success',
-          title: 'Dirección Agregada',
-          text: 'Se ha guardado correctamente.',
-          timer: 1500,
-          showConfirmButton: false
-        });
-      },
-      error: (err) => {
-        console.error(err);
-        Swal.fire('Error', 'No se pudo guardar la dirección', 'error');
-      }
-    });
+    const addressData: Address = this.addressForm.value;
+    const editId = this.editingAddressId();
+
+    if (editId) {
+      this.customerService.updateAddress(editId, addressData).subscribe({
+        next: (updated) => {
+          this.addresses.update(list => list.map(a => a.id === editId ? updated : a));
+          this.closeModal();
+          Swal.fire('Actualizado', 'Dirección actualizada correctamente', 'success');
+        },
+        error: () => Swal.fire('Error', 'No se pudo actualizar', 'error')
+      });
+    } else {
+      this.customerService.addAddress(addressData).subscribe({
+        next: (saved) => {
+          this.addresses.update(list => [...list, saved]);
+          this.closeModal();
+          Swal.fire({
+            icon: 'success',
+            title: 'Dirección Agregada',
+            text: 'Se ha guardado correctamente.',
+            timer: 1500,
+            showConfirmButton: false
+          });
+        },
+        error: (err) => {
+          console.error(err);
+          Swal.fire('Error', 'No se pudo guardar la dirección', 'error');
+        }
+      });
+    }
   }
 }

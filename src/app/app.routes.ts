@@ -94,6 +94,10 @@ export const routes: Routes = [
                 loadComponent: () => import('./components/customer/customer-notifications/customer-notifications').then(m => m.CustomerNotifications)
             },
             {
+                path: 'calculator',
+                loadComponent: () => import('./components/customer/client-calculator/client-calculator').then(m => m.ClientCalculatorComponent)
+            },
+            {
                 path: '',
                 redirectTo: 'dashboard',
                 pathMatch: 'full'

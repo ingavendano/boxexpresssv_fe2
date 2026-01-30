@@ -25,13 +25,14 @@ export interface ParameterAuditLog {
     };
 }
 
+import { environment } from '../../../environments/environment';
+
 @Injectable({
     providedIn: 'root'
 })
 export class GlobalSettingsService {
     private http = inject(HttpClient);
-    // private apiUrl = environment.apiUrl + '/settings';
-    private apiUrl = 'http://localhost:8080/api/settings';
+    private apiUrl = `${environment.apiUrl}/api/settings`;
 
     getAllSettings(): Observable<GlobalParameter[]> {
         return this.http.get<GlobalParameter[]>(this.apiUrl);

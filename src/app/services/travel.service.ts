@@ -13,12 +13,14 @@ export interface Travel {
     transportType: 'AIR' | 'SEA' | 'GROUND';
 }
 
+import { environment } from '../../environments/environment';
+
 @Injectable({
     providedIn: 'root'
 })
 export class TravelService {
     private http = inject(HttpClient);
-    private apiUrl = 'http://localhost:8080/api/travels';
+    private apiUrl = `${environment.apiUrl}/api/travels`;
 
     getPublicTravels(): Observable<Travel[]> {
         return this.http.get<Travel[]>(`${this.apiUrl}/public`);

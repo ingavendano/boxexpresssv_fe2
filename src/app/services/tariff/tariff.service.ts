@@ -16,13 +16,14 @@ export interface TariffRange {
     subcategoryName?: string;
 }
 
+import { environment } from '../../../environments/environment';
+
 @Injectable({
     providedIn: 'root'
 })
 export class TariffService {
     private http = inject(HttpClient);
-    // private apiUrl = environment.apiUrl + '/tariffs'; // Assuming environment
-    private apiUrl = 'http://localhost:8080/api/tariffs';
+    private apiUrl = `${environment.apiUrl}/api/tariffs`;
 
     getAllCategories(): Observable<TariffCategory[]> {
         return this.http.get<TariffCategory[]>(this.apiUrl);

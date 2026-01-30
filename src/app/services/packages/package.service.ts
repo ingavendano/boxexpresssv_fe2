@@ -38,12 +38,14 @@ export interface BulkStatusUpdateRequest {
     tripId?: string;
 }
 
+import { environment } from '../../../environments/environment';
+
 @Injectable({
     providedIn: 'root'
 })
 export class PackageService {
     private http = inject(HttpClient);
-    private apiUrl = 'http://localhost:8080/api/packages';
+    private apiUrl = `${environment.apiUrl}/api/packages`;
 
     createPackage(pkg: CreatePackageRequest): Observable<any> {
         return this.http.post<any>(this.apiUrl, pkg);
