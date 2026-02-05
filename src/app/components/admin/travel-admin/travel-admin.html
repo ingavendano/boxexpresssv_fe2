@@ -1,203 +1,180 @@
-<div class="p-6 bg-gray-50 min-h-screen">
-    <div class="max-w-7xl mx-auto space-y-6">
+<div class="h-full flex flex-col bg-gray-50 p-6 space-y-6">
+    <!-- Header Section -->
+    <div
+        class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+        <div class="md:col-span-4">
+            <h1 class="text-2xl font-bold text-slate-800 flex items-center gap-2">
+                ✈️ Gestión de Viajes
+                <span
+                    class="text-xs font-normal px-2 py-1 bg-slate-100 text-slate-600 rounded-full border border-slate-200">
+                    {{ travels().length }} Viajes
+                </span>
+            </h1>
+        </div>
 
-        <!-- Header & Actions -->
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Gestión de Viajes</h1>
-                <p class="text-sm text-gray-500 mt-1">Administra y monitorea las salidas y llegadas.</p>
+        <!-- Search & Actions -->
+        <div class="md:col-span-8 flex flex-col sm:flex-row gap-3 justify-end items-center">
+            <div class="relative w-full sm:w-64">
+                <span class="absolute left-3 top-2.5 text-gray-400">🔍</span>
+                <input type="text" placeholder="Buscar viaje..."
+                    class="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-sm">
             </div>
             <button (click)="openModal()"
-                class="inline-flex items-center px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-xl shadow-lg shadow-blue-600/20 transition-all duration-200 transform hover:-translate-y-0.5">
-                <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                class="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-sm whitespace-nowrap">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
                 Nuevo Viaje
             </button>
         </div>
+    </div>
 
-        <!-- Main Card -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-
-            <!-- Toolbar / Filters -->
-            <div
-                class="p-5 border-b border-gray-100 bg-white flex flex-col sm:flex-row gap-4 justify-between items-center">
-                <div class="relative w-full sm:w-96">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                    </div>
-                    <input type="text"
-                        class="block w-full pl-10 pr-3 py-2.5 border border-gray-200 rounded-xl leading-5 bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 sm:text-sm transition-colors"
-                        placeholder="Buscar por ruta, ID...">
-                </div>
-
-                <div class="flex items-center gap-3 w-full sm:w-auto">
-                    <button
-                        class="inline-flex items-center justify-center w-full sm:w-auto px-4 py-2.5 border border-gray-200 shadow-sm text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
-                        <svg class="h-4 w-4 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                        </svg>
-                        Filtrar por Estado
-                        <svg class="ml-2 h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Table -->
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-100">
-                    <thead class="bg-gray-50/50">
-                        <tr>
-                            <th scope="col"
-                                class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                Ruta</th>
-                            <th scope="col"
-                                class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                Fechas</th>
-                            <th scope="col"
-                                class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                Tipo</th>
-                            <th scope="col"
-                                class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                Estado</th>
-                            <th scope="col"
-                                class="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-100">
-                        @for (travel of travels(); track travel.id) {
-                        <tr class="hover:bg-blue-50/30 transition-colors duration-150 group">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex flex-col">
-                                    <span class="text-sm font-semibold text-gray-900">{{ travel.origin }}</span>
-                                    <div class="flex items-center text-xs text-gray-500 mt-0.5">
-                                        <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                        </svg>
-                                        {{ travel.destination }}
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex flex-col">
-                                    <span class="text-sm font-bold text-gray-800">
-                                        Salida: {{ travel.departureDate | date:'MM/dd/yy' }}
-                                    </span>
-                                    <span class="text-xs text-gray-400 mt-1">
-                                        Cierre: {{ travel.closingDate | date:'MM/dd/yy' }}
-                                    </span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border"
-                                    [class.bg-blue-50]="travel.transportType === 'AIR'"
-                                    [class.text-blue-700]="travel.transportType === 'AIR'"
-                                    [class.border-blue-100]="travel.transportType === 'AIR'"
-                                    [class.bg-cyan-50]="travel.transportType === 'SEA'"
-                                    [class.text-cyan-700]="travel.transportType === 'SEA'"
-                                    [class.border-cyan-100]="travel.transportType === 'SEA'">
-                                    @if(travel.transportType === 'AIR') {
-                                    <svg class="w-3 h-3 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <!-- Smart Table Container -->
+    <div class="flex-1 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
+        <div class="overflow-auto flex-1">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-gray-50 sticky top-0 z-10 shadow-sm">
+                    <tr>
+                        <th
+                            class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                            Ruta
+                        </th>
+                        <th
+                            class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                            Fechas (Salida / Cierre)
+                        </th>
+                        <th
+                            class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                            Tipo
+                        </th>
+                        <th
+                            class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                            Estado
+                        </th>
+                        <th
+                            class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200 w-32">
+                            Acciones
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    @for (travel of travels(); track travel.id) {
+                    <tr class="group hover:bg-blue-50/50 transition-colors duration-200">
+                        <!-- Route -->
+                        <td class="p-4">
+                            <div class="flex flex-col">
+                                <span class="font-bold text-slate-700 text-sm">{{ travel.origin }}</span>
+                                <div class="flex items-center gap-1 text-xs text-gray-500 mt-0.5">
+                                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                    </svg>
+                                    {{ travel.destination }}
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- Dates -->
+                        <td class="p-4">
+                            <div class="flex flex-col gap-1">
+                                <span class="text-xs font-medium text-gray-700 flex items-center gap-1">
+                                    🛫 {{ travel.departureDate | date:'MMM d, y' }}
+                                </span>
+                                <span class="text-[10px] text-gray-500 flex items-center gap-1">
+                                    🔒 Cierre: {{ travel.closingDate | date:'MMM d, y' }}
+                                </span>
+                            </div>
+                        </td>
+
+                        <!-- Transport Type -->
+                        <td class="p-4">
+                            <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium border"
+                                [ngClass]="getTransportColor(travel.transportType)">
+                                @if(travel.transportType === 'AIR') {
+                                <svg class="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                </svg>
+                                } @else if(travel.transportType === 'SEA') {
+                                <svg class="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                                } @else {
+                                <svg class="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                                }
+                                {{ travel.transportType }}
+                            </span>
+                        </td>
+
+                        <!-- Status -->
+                        <td class="p-4">
+                            <span
+                                class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold shadow-sm"
+                                [ngClass]="getStatusColor(travel.status)">
+                                {{ travel.status }}
+                            </span>
+                        </td>
+
+                        <!-- Actions (Hover Only) -->
+                        <td class="p-4">
+                            <div
+                                class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                <button (click)="openModal(travel)"
+                                    class="p-1.5 text-slate-600 hover:bg-slate-100 rounded-md transition-colors"
+                                    title="Editar">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                    </svg>
+                                </button>
+                                <button (click)="deleteTravel(travel)"
+                                    class="p-1.5 text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                                    title="Eliminar">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    } @empty {
+                    <tr>
+                        <td colspan="5" class="p-12 text-center text-gray-400">
+                            <div class="flex flex-col items-center">
+                                <div class="bg-gray-50 rounded-full p-4 mb-3">
+                                    <svg class="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                             d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                                     </svg>
-                                    } @else {
-                                    <svg class="w-3 h-3 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                    </svg>
-                                    }
-                                    {{ travel.transportType }}
                                 </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full border"
-                                    [class.bg-emerald-100]="travel.status === 'COMPLETED'"
-                                    [class.text-emerald-800]="travel.status === 'COMPLETED'"
-                                    [class.border-emerald-200]="travel.status === 'COMPLETED'"
-                                    [class.bg-blue-600]="travel.status === 'IN_TRANSIT'"
-                                    [class.text-white]="travel.status === 'IN_TRANSIT'"
-                                    [class.border-blue-600]="travel.status === 'IN_TRANSIT'"
-                                    [class.shadow-sm]="travel.status === 'IN_TRANSIT'"
-                                    [class.bg-amber-100]="travel.status === 'SCHEDULED'"
-                                    [class.text-amber-800]="travel.status === 'SCHEDULED'"
-                                    [class.border-amber-200]="travel.status === 'SCHEDULED'"
-                                    [class.bg-gray-100]="travel.status === 'CANCELLED'"
-                                    [class.text-gray-800]="travel.status === 'CANCELLED'"
-                                    [class.border-gray-200]="travel.status === 'CANCELLED'">
-                                    {{ travel.status }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <div class="flex items-center justify-end gap-2">
-                                    <button (click)="openModal(travel)"
-                                        class="p-1 text-gray-400 hover:text-blue-600 transition-colors rounded-lg hover:bg-blue-50">
-                                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                        </svg>
-                                    </button>
-                                    <button (click)="deleteTravel(travel)"
-                                        class="p-1 text-gray-400 hover:text-red-600 transition-colors rounded-lg hover:bg-red-50">
-                                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                        </svg>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        }
-                        @if (travels().length === 0 && !isLoading()) {
-                        <tr>
-                            <td colspan="5" class="px-6 py-16 text-center text-gray-500">
-                                <div class="flex flex-col items-center">
-                                    <div
-                                        class="h-12 w-12 rounded-full bg-blue-50 flex items-center justify-center mb-3">
-                                        <svg class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24"
-                                            stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M12 4v16m8-8H4" />
-                                        </svg>
-                                    </div>
-                                    <h3 class="text-sm font-medium text-gray-900">No hay viajes registrados</h3>
-                                    <p class="text-sm text-gray-500 mt-1">Comienza creando un nuevo viaje para gestionar
-                                        envíos.</p>
-                                    <button (click)="openModal()"
-                                        class="mt-4 text-sm font-medium text-blue-600 hover:text-blue-500">
-                                        Crear mi primer viaje &rarr;
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+                                <p class="text-lg font-medium text-gray-500">No hay viajes registrados</p>
+                                <button (click)="openModal()"
+                                    class="mt-2 text-sm text-blue-600 hover:text-blue-500 font-medium">
+                                    Crear nuevo viaje
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 
-<!-- Modal (kept same structure but cleaned up bg opacity) -->
+<!-- Modal (Reused Logic) -->
 @if (isModalOpen()) {
 <div class="fixed inset-0 overflow-y-auto z-50">
     <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-
-        <!-- Backdrop -->
         <div class="fixed inset-0 transition-opacity" aria-hidden="true">
             <div class="absolute inset-0 bg-gray-900/50 backdrop-blur-sm" (click)="closeModal()"></div>
         </div>
-
-        <!-- Modal Panel -->
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
         <div
             class="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full relative z-50">
@@ -206,58 +183,52 @@
                     <h3 class="text-xl font-bold text-gray-900 mb-6 border-b border-gray-100 pb-4">
                         {{ isEditing() ? 'Editar Viaje' : 'Nuevo Viaje' }}
                     </h3>
-
                     <div class="grid grid-cols-2 gap-5">
-                        <!-- Origin -->
                         <div class="col-span-1">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Origen</label>
+                            <label
+                                class="block text-xs font-semibold text-gray-600 mb-1 uppercase tracking-wide">Origen</label>
                             <input type="text" formControlName="origin"
-                                class="block w-full rounded-xl border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2.5">
+                                class="block w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2.5 bg-gray-50 border">
                         </div>
-
-                        <!-- Destination -->
                         <div class="col-span-1">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Destino</label>
+                            <label
+                                class="block text-xs font-semibold text-gray-600 mb-1 uppercase tracking-wide">Destino</label>
                             <input type="text" formControlName="destination"
-                                class="block w-full rounded-xl border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2.5">
+                                class="block w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2.5 bg-gray-50 border">
                         </div>
-
-                        <!-- Transport Type -->
                         <div class="col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Transporte</label>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1 uppercase tracking-wide">Tipo
+                                de Transporte</label>
                             <select formControlName="transportType"
-                                class="block w-full rounded-xl border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2.5 bg-white">
+                                class="block w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2.5 bg-white border">
                                 <option value="AIR">Aéreo</option>
                                 <option value="SEA">Marítimo</option>
                                 <option value="GROUND">Terrestre</option>
                             </select>
                         </div>
-
-                        <!-- Dates -->
                         <div class="col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Cierre
-                                (Recepción)</label>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1 uppercase tracking-wide">Fecha
+                                de Cierre</label>
                             <input type="date" formControlName="closingDate"
-                                class="block w-full rounded-xl border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2.5">
+                                class="block w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2.5 border">
                         </div>
-
                         <div class="col-span-1">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Fecha Salida</label>
+                            <label
+                                class="block text-xs font-semibold text-gray-600 mb-1 uppercase tracking-wide">Salida</label>
                             <input type="date" formControlName="departureDate"
-                                class="block w-full rounded-xl border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2.5">
+                                class="block w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2.5 border">
                         </div>
-
                         <div class="col-span-1">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Fecha Llegada</label>
+                            <label
+                                class="block text-xs font-semibold text-gray-600 mb-1 uppercase tracking-wide">Llegada</label>
                             <input type="date" formControlName="arrivalDate"
-                                class="block w-full rounded-xl border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2.5">
+                                class="block w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2.5 border">
                         </div>
-
-                        <!-- Status -->
                         <div class="col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+                            <label
+                                class="block text-xs font-semibold text-gray-600 mb-1 uppercase tracking-wide">Estado</label>
                             <select formControlName="status"
-                                class="block w-full rounded-xl border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2.5 bg-white">
+                                class="block w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2.5 bg-white border">
                                 <option value="SCHEDULED">Programado</option>
                                 <option value="IN_TRANSIT">En Tránsito</option>
                                 <option value="COMPLETED">Completado</option>
@@ -266,15 +237,14 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- Footer -->
-                <div class="bg-gray-50 px-6 py-4 sm:flex sm:flex-row-reverse border-t border-gray-100">
+                <div class="bg-gray-50 px-6 py-4 flex flex-row-reverse gap-3 border-t border-gray-100">
                     <button type="submit" [disabled]="isLoading()"
-                        class="w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50 transition-colors">
-                        {{ isEditing() ? 'Actualizar' : 'Guardar' }}
+                        class="inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-slate-900 text-base font-medium text-white hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 sm:text-sm disabled:opacity-50 transition-colors">
+                        {{ isEditing() ? 'Actualizar' : 'Crear Viaje' }}
                     </button>
                     <button type="button" (click)="closeModal()"
-                        class="mt-3 w-full inline-flex justify-center rounded-xl border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm transition-colors">
+                        class="inline-flex justify-center rounded-lg border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm transition-colors">
                         Cancelar
                     </button>
                 </div>

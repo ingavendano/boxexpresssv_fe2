@@ -25,6 +25,10 @@ export const routes: Routes = [
             {
                 path: 'calendar',
                 loadComponent: () => import('./components/travel-calendar/travel-calendar').then(m => m.TravelCalendarComponent)
+            },
+            {
+                path: 'quote',
+                loadComponent: () => import('./components/public/public-quote/public-quote.component').then(m => m.PublicQuoteComponent)
             }
         ]
     },
@@ -84,6 +88,10 @@ export const routes: Routes = [
             {
                 path: 'dashboard',
                 loadComponent: () => import('./components/customer/customer-profile/customer-profile').then(m => m.CustomerProfile)
+            },
+            {
+                path: 'profile',
+                loadComponent: () => import('./components/customer/customer-settings/customer-settings').then(m => m.CustomerSettingsComponent)
             },
             {
                 path: 'addresses',

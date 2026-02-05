@@ -3,5 +3,6 @@ export interface TrackingStatus {
   name: string;
   description: string;
   sortOrder: number;
+  color?: string;
   active: boolean;
 }

@@ -37,6 +37,10 @@ export class TariffService {
         return this.http.post<TariffRange[]>(`${this.apiUrl}/${categoryId}/ranges/batch`, ranges);
     }
 
+    updateRange(rangeId: number, range: TariffRange): Observable<TariffRange> {
+        return this.http.put<TariffRange>(`${this.apiUrl}/ranges/${rangeId}`, range);
+    }
+
     deleteRange(rangeId: number): Observable<void> {
         return this.http.delete<void>(`${this.apiUrl}/ranges/${rangeId}`);
     }

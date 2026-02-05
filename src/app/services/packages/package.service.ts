@@ -25,6 +25,7 @@ export interface Package {
     senderName: string;
     receiverName: string;
     destinationAddress: string;
+    weight?: number;
     tripId?: string;
     createdAt: string;
     events: any[];
@@ -74,5 +75,9 @@ export class PackageService {
 
     getMyPackages(): Observable<any[]> {
         return this.http.get<any[]>(`${this.apiUrl}/customer/my-packages`);
+    }
+
+    deletePackage(id: number): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/${id}`);
     }
 }

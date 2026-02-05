@@ -105,7 +105,8 @@ export const en = {
         PLACEHOLDER: {
             ELECTRONICS: 'Ex: Electronics'
         },
-        ADD_SUBCATEGORY: 'Add Subcategory'
+        ADD_SUBCATEGORY: 'Add Subcategory',
+        EDIT_SUBCATEGORY: 'Edit Subcategory'
     },
     SETTINGS: {
         TITLE: 'Global Configuration',

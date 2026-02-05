@@ -25,6 +25,7 @@ export class TrackingStatusAdminComponent implements OnInit {
         name: ['', Validators.required],
         description: [''],
         sortOrder: [0, Validators.required],
+        color: ['#6B7280'], // Default gray
         active: [true]
     });
 

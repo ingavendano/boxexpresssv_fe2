@@ -137,4 +137,115 @@ export class TrackingAdmin implements OnInit {
       }
     });
   }
+  // Helper to convert hex to rgba
+  private hexToRgba(hex: string, alpha: number): string {
+    let r = 0, g = 0, b = 0;
+    if (!hex) return `rgba(107, 114, 128, ${alpha})`; // Default gray
+
+    if (hex.length === 4) {
+      r = parseInt("0x" + hex[1] + hex[1]);
+      g = parseInt("0x" + hex[2] + hex[2]);
+      b = parseInt("0x" + hex[3] + hex[3]);
+    } else if (hex.length === 7) {
+      r = parseInt("0x" + hex[1] + hex[2]);
+      g = parseInt("0x" + hex[3] + hex[4]);
+      b = parseInt("0x" + hex[5] + hex[6]);
+    }
+    return `rgba(${r},${g},${b},${alpha})`;
+  }
+
+  getStatusStyles(status: any) {
+    const color = status?.color || '#6B7280';
+    return {
+      'background-color': this.hexToRgba(color, 0.1),
+      'color': color,
+      'border': `1px solid ${this.hexToRgba(color, 0.2)}`
+    };
+  }
+
+  viewPackage(pkg: Package) {
+    const statusStyles = this.getStatusStyles(pkg.currentStatus);
+    const styleString = `background-color: ${statusStyles['background-color']}; color: ${statusStyles['color']}; border: ${statusStyles['border']}`;
+
+    Swal.fire({
+      title: 'Detalles del Paquete',
+      html: `
+        <div class="overflow-hidden rounded-lg border border-gray-200">
+          <table class="w-full text-sm text-left">
+            <tbody class="divide-y divide-gray-100">
+              <tr class="bg-gray-50">
+                <td class="px-4 py-3 font-semibold text-gray-600 w-1/3">Tracking ID</td>
+                <td class="px-4 py-3 font-mono text-blue-600">${pkg.trackingId}</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-gray-600">Remitente</td>
+                <td class="px-4 py-3">${pkg.senderName}</td>
+              </tr>
+              <tr class="bg-gray-50">
+                <td class="px-4 py-3 font-semibold text-gray-600">Destinatario</td>
+                <td class="px-4 py-3">${pkg.receiverName}</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-gray-600">Estado</td>
+                <td class="px-4 py-3">
+                  <span class="px-2 py-1 rounded-full text-xs font-semibold" style="${styleString}">
+                    ${pkg.currentStatus.name}
+                  </span>
+                </td>
+              </tr>
+              <tr class="bg-gray-50">
+                <td class="px-4 py-3 font-semibold text-gray-600">Peso</td>
+                <td class="px-4 py-3 font-mono">${pkg.weight ? pkg.weight + ' lb' : '-'}</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-gray-600">Trip ID</td>
+                <td class="px-4 py-3 font-mono">${pkg.tripId || '-'}</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-gray-600">Descripción</td>
+                <td class="px-4 py-3">${pkg.description}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `,
+      confirmButtonText: 'Cerrar',
+      confirmButtonColor: '#334155', // Slate-700
+      width: '32rem'
+    });
+  }
+
+  editPackage(pkg: Package) {
+    Swal.fire({
+      title: 'Editar Paquete',
+      text: `Funcionalidad de edición completa para ${pkg.trackingId} pendiente de implementación.`,
+      icon: 'info'
+    });
+  }
+
+  deletePackage(pkg: Package) {
+    Swal.fire({
+      title: '¿Eliminar paquete?',
+      text: `Esta acción no se puede deshacer. Se eliminará el paquete ${pkg.trackingId} y todo su historial.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.packageService.deletePackage(pkg.id).subscribe({
+          next: () => {
+            Swal.fire('¡Eliminado!', 'El paquete ha sido eliminado.', 'success');
+            this.loadPackages();
+          },
+          error: (err) => {
+            console.error(err);
+            Swal.fire('Error', 'No se pudo eliminar el paquete.', 'error');
+          }
+        });
+      }
+    });
+  }
 }
