@@ -1,19 +1,29 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';
 import { PackageService } from '../../../services/packages/package.service';
 import { TranslatePipe } from '../../../pipes/translate.pipe';
+import { AuthService } from '../../../services/auth/auth.service';
+import { CustomerService } from '../../../services/customer/customer.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-customer-profile',
   standalone: true,
-  imports: [CommonModule, TranslatePipe],
+  imports: [CommonModule, TranslatePipe, ReactiveFormsModule],
   templateUrl: './customer-profile.html',
   styleUrl: './customer-profile.css',
 })
 export class CustomerProfile {
+  authService = inject(AuthService);
   private packageService = inject(PackageService);
+  private customerService = inject(CustomerService);
+
+  private route = inject(ActivatedRoute);
 
   packages = signal<any[]>([]);
+
 
   // KPIs
   packagesInTransit = computed(() =>

@@ -1,0 +1,108 @@
+<div class="max-w-4xl mx-auto space-y-6 animate-fade-in">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h2 class="text-2xl font-bold text-blue-900">Cotizador de Envíos</h2>
+            <p class="text-gray-500">Calcula el costo estimado de tus paquetes</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Form -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <form [formGroup]="calculatorForm" class="space-y-6">
+                <div>
+                    <h3 class="font-bold text-gray-800 border-b pb-2 mb-4">Detalles del Paquete</h3>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Categoría</label>
+                            <select formControlName="category"
+                                class="w-full px-3 py-2 border rounded-lg focus:ring-blue-500">
+                                <option value="">Seleccionar...</option>
+                                @for (cat of tariffCategories(); track cat.id) {
+                                <option [value]="cat.id">{{ cat.name | translate }}</option>
+                                }
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Subcategoría (Producto)</label>
+                            <select formControlName="subcategory"
+                                class="w-full px-3 py-2 border rounded-lg focus:ring-blue-500">
+                                <option value="">General</option>
+                                @for (sub of availableSubcategories(); track sub.id) {
+                                <option [value]="sub.id">{{ sub.subcategoryName }} ({{ sub.feeValue }}% Arancel)
+                                </option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Peso (Lb)</label>
+                                <input formControlName="weight" type="number" step="0.1"
+                                    class="w-full px-3 py-2 border rounded-lg focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Valor ($)</label>
+                                <input formControlName="declaredValue" type="number" step="0.01"
+                                    class="w-full px-3 py-2 border rounded-lg focus:ring-blue-500">
+                            </div>
+                        </div>
+
+                        <!-- Checkbox for Home Delivery -->
+                        <div class="flex items-center gap-3 bg-blue-50 p-3 rounded-lg border border-blue-100 mt-2">
+                            <input formControlName="isHomeDelivery" id="isHomeDelivery" type="checkbox"
+                                class="w-5 h-5 text-blue-600 rounded focus:ring-blue-500 border-gray-300">
+                            <label for="isHomeDelivery"
+                                class="text-sm font-medium text-blue-900 cursor-pointer select-none">
+                                Entrega a Domicilio
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Breakdown -->
+        <div class="bg-gray-50 rounded-xl border border-gray-200 p-6 h-fit">
+            <h3 class="font-bold text-gray-800 border-b pb-2 mb-4">Desglose de Costos</h3>
+            <div class="space-y-3">
+                <div class="flex justify-between text-sm text-gray-600">
+                    <span>Costo Base (Flete):</span>
+                    <span class="font-mono">${{ baseCost() | number:'1.2-2' }}</span>
+                </div>
+                <div class="flex justify-between text-sm text-gray-600">
+                    <span>Aranceles (DAI/Seguro):</span>
+                    <span class="font-mono">${{ tariffCost() | number:'1.2-2' }}</span>
+                </div>
+                <div class="flex justify-between text-sm text-gray-600">
+                    <span>Cargos Administrativos:</span>
+                    <span class="font-mono">${{ adminFees() | number:'1.2-2' }}</span>
+                </div>
+                <div class="flex justify-between text-sm text-gray-600">
+                    <span>Impuestos (IVA):</span>
+                    <span class="font-mono">${{ taxes() | number:'1.2-2' }}</span>
+                </div>
+
+                @if(homeDeliveryFee() > 0) {
+                <div class="flex justify-between text-sm font-semibold text-blue-700 bg-blue-100 px-2 py-1 rounded">
+                    <span>Costo a Domicilio:</span>
+                    <span class="font-mono">${{ homeDeliveryFee() | number:'1.2-2' }}</span>
+                </div>
+                }
+
+                <div class="pt-4 mt-4 border-t border-gray-300">
+                    <div class="flex justify-between items-end">
+                        <span class="text-gray-900 font-bold">Total Estimado:</span>
+                        <span class="text-3xl font-bold text-orange-500">${{ totalCost() | number:'1.2-2' }}</span>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-2 text-center text-balance">
+                        * Este es un costo estimado. El precio final puede variar sujeto a inspección en aduana y
+                        re-pesaje.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

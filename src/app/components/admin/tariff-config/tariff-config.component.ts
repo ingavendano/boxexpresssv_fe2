@@ -31,6 +31,7 @@ export class TariffConfigComponent implements OnInit {
 
     // Store items that are added locally but not yet saved to backend
     pendingRanges = signal<TariffRange[]>([]);
+    editingRangeId = signal<number | null>(null);
 
     constructor() {
         this.rangeForm = this.fb.group({
@@ -83,8 +84,7 @@ export class TariffConfigComponent implements OnInit {
     selectCategory(category: TariffCategory) {
         this.selectedCategory.set(category);
         this.pendingRanges.set([]); // Clear pending when switching
-        this.rangeForm.reset({ minValue: 0, maxValue: 0, feeValue: 0, subcategoryName: '' });
-        this.updateValidators();
+        this.cancelEdit();
     }
 
     updateValidators() {
@@ -106,7 +106,23 @@ export class TariffConfigComponent implements OnInit {
         nameCtrl?.updateValueAndValidity();
     }
 
-    addToPending() {
+    editRange(item: TariffRange) {
+        this.editingRangeId.set(item.id!);
+        this.rangeForm.patchValue({
+            minValue: item.minValue,
+            maxValue: item.maxValue,
+            feeValue: item.feeValue,
+            subcategoryName: item.subcategoryName
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    cancelEdit() {
+        this.editingRangeId.set(null);
+        this.rangeForm.reset({ minValue: 0, maxValue: 0, feeValue: 0, subcategoryName: '' });
+    }
+
+    onSubmit() {
         if (this.rangeForm.invalid || !this.selectedCategory()) {
             this.rangeForm.markAllAsTouched();
             return;
@@ -114,21 +130,33 @@ export class TariffConfigComponent implements OnInit {
 
         const formVal = this.rangeForm.value;
         const newRange: TariffRange = {
+            id: this.editingRangeId() || undefined,
             minValue: 0, // Default
             maxValue: 0, // Default
             feeValue: formVal.feeValue,
             subcategoryName: formVal.subcategoryName
         };
 
-        this.pendingRanges.update(prev => [...prev, newRange]);
-
-        // Reset form but keep category
-        this.rangeForm.reset({
-            minValue: 0,
-            maxValue: 0,
-            feeValue: 0,
-            subcategoryName: ''
-        });
+        if (this.editingRangeId()) {
+            // Update existing
+            this.isSubmitting.set(true);
+            this.tariffService.updateRange(this.editingRangeId()!, newRange).subscribe({
+                next: () => {
+                    this.isSubmitting.set(false);
+                    this.loadCategories();
+                    this.cancelEdit();
+                    Swal.fire('Guardado', 'Subcategoría actualizada', 'success');
+                },
+                error: () => {
+                    this.isSubmitting.set(false);
+                    Swal.fire('Error', 'No se pudo actualizar', 'error');
+                }
+            });
+        } else {
+            // Add to pending
+            this.pendingRanges.update(prev => [...prev, newRange]);
+            this.cancelEdit(); // Just resets form
+        }
     }
 
     removePending(index: number) {

@@ -25,6 +25,10 @@ export const routes: Routes = [
             {
                 path: 'calendar',
                 loadComponent: () => import('./components/travel-calendar/travel-calendar').then(m => m.TravelCalendarComponent)
+            },
+            {
+                path: 'quote',
+                loadComponent: () => import('./components/public/public-quote/public-quote.component').then(m => m.PublicQuoteComponent)
             }
         ]
     },
@@ -86,12 +90,20 @@ export const routes: Routes = [
                 loadComponent: () => import('./components/customer/customer-profile/customer-profile').then(m => m.CustomerProfile)
             },
             {
+                path: 'profile',
+                loadComponent: () => import('./components/customer/customer-settings/customer-settings').then(m => m.CustomerSettingsComponent)
+            },
+            {
                 path: 'addresses',
                 loadComponent: () => import('./components/customer/customer-addresses/customer-addresses').then(m => m.CustomerAddresses)
             },
             {
                 path: 'notifications',
                 loadComponent: () => import('./components/customer/customer-notifications/customer-notifications').then(m => m.CustomerNotifications)
+            },
+            {
+                path: 'calculator',
+                loadComponent: () => import('./components/customer/client-calculator/client-calculator').then(m => m.ClientCalculatorComponent)
             },
             {
                 path: '',

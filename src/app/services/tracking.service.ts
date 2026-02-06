@@ -20,12 +20,14 @@ export interface PackagePublic {
     history: TrackingEvent[];
 }
 
+import { environment } from '../../environments/environment';
+
 @Injectable({
     providedIn: 'root'
 })
 export class TrackingService {
     private http = inject(HttpClient);
-    private apiUrl = 'http://localhost:8080/api/tracking/public';
+    private apiUrl = `${environment.apiUrl}/api/tracking/public`;
 
     trackPackage(trackingId: string): Observable<PackagePublic> {
         return this.http.get<PackagePublic>(`${this.apiUrl}/${trackingId}`);

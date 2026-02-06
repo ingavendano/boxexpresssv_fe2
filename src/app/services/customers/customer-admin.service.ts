@@ -20,12 +20,14 @@ export interface Address {
     referencePoint?: string;
 }
 
+import { environment } from '../../../environments/environment';
+
 @Injectable({
     providedIn: 'root'
 })
 export class CustomerAdminService {
     private http = inject(HttpClient);
-    private apiUrl = 'http://localhost:8080/api/admin/customers';
+    private apiUrl = `${environment.apiUrl}/api/admin/customers`;
 
     getAllCustomers(): Observable<User[]> {
         return this.http.get<User[]>(this.apiUrl);
